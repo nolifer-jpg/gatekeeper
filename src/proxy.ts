@@ -3,7 +3,7 @@ import http, { IncomingMessage, ServerResponse } from 'http';
 //importing loadBalancer
 import { roundRobin } from './loadBalancer.js';
 //port
-const port: number = 8080;
+const port: number = Number(process.env.PORT) || 8080;
 //server creation
 const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
   //target port 

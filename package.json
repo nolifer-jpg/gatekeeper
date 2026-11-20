@@ -2,7 +2,6 @@
   "name": "gatekeeper",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
       "build": "tsc",
       "dev": "npm run build && sh -c 'trap \"kill 0\" EXIT; node dist/upstream.js & node dist/proxy.js & wait'"
