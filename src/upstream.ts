@@ -1,18 +1,28 @@
 //importing express
 import express from 'express';
+import { pathToFileURL } from 'node:url';
 //making array of the port numbers given
-const ports: number[] = process.argv.slice(2).map(Number).filter(p => !Number.isNaN(p));
+export const ports: number[] = [4001, 4002, 4003];
 //loop for creating different apps for different ports
-for (const port of ports)
-{
-  //creating the app
-  const app: express.Application = express();
-  //get request that sends hello 
-  app.get("/", (req, res) => {
+export function startUpstreamServers(targetPorts: number[] = ports): void {
+  for (const port of targetPorts) {
+    //creating the server instance
+    const app: express.Application = express();
+    //get request from the client
+    app.get('/', (req, res) => {
       res.send(`Hello from upstream server on port ${port}`);
     });
-  //listening function
-  app.listen(port, () => {
+    //listening to the ports
+    app.listen(port, () => {
       console.log(`Upstream server running at http://localhost:${port}/`);
     });
+  }
+}
+//checking if the function is run from the main module
+const isMainModule =
+  process.argv[1] !== undefined &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
+//if true then run the upstream servers  
+if (isMainModule) {
+    startUpstreamServers();
 }

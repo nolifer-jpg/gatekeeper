@@ -1,10 +1,33 @@
 //importing http module
 import http, { IncomingMessage, ServerResponse } from 'http';
+//importing loadBalancer
+import { roundRobin } from './loadBalancer.js';
 //port
 const port: number = 8080;
-const targetPort: number = 4001;
 //server creation
 const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
+  //target port 
+  let targetPort: number;
+  //error handling for the round robin
+  try
+  {
+    targetPort = roundRobin();
+  } catch (error: unknown) {
+    if (error instanceof Error)
+    {
+      console.error("Load balancer error:", error.message);
+    }
+    else
+    {
+      console.error("Unexpected load balancer error:", error);
+    }
+    if (!res.headersSent)
+    {
+      res.writeHead(503, { 'Content-Type': 'text/plain' });
+    }
+    res.end('Service Unavailable');
+    return;
+  }
   //information needed for the proxy to connect to the target server
   const options: http.RequestOptions = {
     hostname: 'localhost',
@@ -18,6 +41,7 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
     res.writeHead(proxyRes.statusCode || 502, proxyRes.headers);
     proxyRes.pipe(res);
   })
+  //error handling if bad request
   proxyReq.on('error', (err: Error) => {
       console.error(`Upstream error on port ${targetPort}:`, err.message);
       if (!res.headersSent) {
@@ -25,8 +49,9 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
       }
       res.end('Bad Gateway');
     });
-  
-    req.pipe(proxyReq);
+    //piping the client req to the send req
+  req.pipe(proxyReq);
+
   });
 //listening to the port
 server.listen(port, () => {
