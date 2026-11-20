@@ -55,7 +55,7 @@ Gatekeeper functions as an application-layer reverse proxy routing traffic acros
 
 * \[x\] Project setup & dynamic multi-port upstream microservices.
 
-* \[ \] Native HTTP stream reverse proxy forwarder & Round Robin load balancing.
+* \[x\] Native HTTP stream reverse proxy forwarder & Round Robin load balancing.
 
 * \[ \] Active health-checking background loop & automated failover.
 
