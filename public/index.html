@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gatekeeper Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600&family=Manrope:wght@400;500;600;700&family=Montserrat:wght@500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <div>
+        <h1 class="title">Gatekeeper</h1>
+        <p class="lead">
+          Live reverse proxy and round-robin traffic across <span class="highlight">healthy upstream nodes</span>.
+        </p>
+      </div>
+      <div class="meta">
+        <span id="mode-badge" class="badge">dev</span>
+        <button id="refresh-btn" class="btn-asym" type="button">Refresh now</button>
+      </div>
+    </header>
+
+    <section class="grid-summary" aria-label="Summary metrics">
+      <article class="card">
+        <p class="label">Total requests</p>
+        <p id="total-requests" class="value mono">0</p>
+      </article>
+      <article class="card">
+        <p class="label">502 bad gateway</p>
+        <p id="errors-502" class="value mono text-err">0</p>
+      </article>
+      <article class="card">
+        <p class="label">503 unavailable</p>
+        <p id="errors-503" class="value mono text-err">0</p>
+      </article>
+      <article class="card">
+        <p class="label">Last updated</p>
+        <p id="last-updated" class="value mono muted-sm">--:--:--</p>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Upstream ports</h2>
+      <div id="upstreams-grid" class="grid-upstreams"></div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Recent requests</h2>
+      <div class="card table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Method</th>
+              <th>Path</th>
+              <th>Port</th>
+              <th>Status</th>
+              <th>Latency</th>
+            </tr>
+          </thead>
+          <tbody id="requests-body">
+            <tr>
+              <td colspan="6" class="empty">Waiting for traffic...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
