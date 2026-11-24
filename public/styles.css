@@ -118,8 +118,14 @@ body {
 
 .grid-upstreams {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .grid-upstreams {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card {
@@ -127,6 +133,9 @@ body {
   border: 1px solid var(--card-edge);
   border-radius: calc(var(--radius) + 4px);
   padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
   transition: border-color 250ms ease;
 }
 
@@ -146,7 +155,7 @@ body {
 }
 
 .muted-sm {
-  font-size: 1.15rem;
+  font-size: 0.9rem;
   color: var(--muted);
 }
 
@@ -179,6 +188,13 @@ body {
 .status-txt {
   font-family: "Geist Mono", monospace;
   font-size: 0.78rem;
+}
+
+.toggle-port-btn {
+  margin-top: 0.35rem;
+  align-self: flex-start;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
 }
 
 .text-ok {
