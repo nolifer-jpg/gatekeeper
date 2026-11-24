@@ -93,6 +93,23 @@ body {
   opacity: 0.9;
 }
 
+.btn-asym-mirror {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--card-edge);
+  padding: 0.5rem 0.9rem;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius) 0 var(--radius) 0;
+  transition: border-color 200ms ease, opacity 200ms ease;
+}
+
+.btn-asym-mirror:hover {
+  border-color: var(--card-edge-hover);
+}
+
 .grid-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));

@@ -63,6 +63,16 @@ async function loadStats() {
   }
 }
 
+async function sendTraffic(count) {
+  const jobs = Array.from({ length: count }, () =>
+    fetch("/", { cache: "no-store" }).catch(() => null)
+  );
+  await Promise.all(jobs);
+  await loadStats();
+}
+
+el("send-one-btn").addEventListener("click", () => sendTraffic(1));
+el("send-burst-btn").addEventListener("click", () => sendTraffic(6));
 el("refresh-btn").addEventListener("click", loadStats);
 loadStats();
 setInterval(loadStats, 1500);
