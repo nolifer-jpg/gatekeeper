@@ -125,6 +125,12 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
     });
     return;
   }
+  
+  if (urlPath === '/favicon.ico') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
 
   const startTime = Date.now();
   const method = req.method || 'GET';
