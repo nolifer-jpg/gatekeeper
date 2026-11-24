@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-      "build": "tsc",
-      "dev": "npm run build && sh -c 'trap \"kill 0\" EXIT; node dist/upstream.js & node dist/proxy.js & wait'"
+    "build": "tsc",
+    "start": "sh -c 'trap \"kill 0\" EXIT; node dist/upstream.js & node dist/proxy.js & wait'",
+    "dev": "npm run build && npm run start"
   },
   "repository": {
     "type": "git",
@@ -16,14 +17,12 @@
     "url": "https://github.com/nolifer-jpg/gatekeeper/issues"
   },
   "homepage": "https://github.com/nolifer-jpg/gatekeeper#readme",
-  "devDependencies": {
-    "@types/node": "^26.6.6",
-    "typescript": "^7.0.2"
-  },
   "dependencies": {
     "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
     "express": "^5.3.0",
     "nodemon": "^3.1.14",
+    "typescript": "^7.0.2",
     "ws": "^8.23.0"
   }
 }
