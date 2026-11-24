@@ -66,4 +66,4 @@ done
 * [x] Native HTTP stream reverse proxy forwarder, Round-Robin load balancing, & `502`/`503` error handling.
 * [x] Single-command `npm run dev` build and concurrent process orchestration.
 * [ ] Per-request failover/retries & active health-checking to hide downed upstreams.
-* [ ] In-memory metrics tracking & pure HTML/CSS/JS live status dashboard.
+* [X] In-memory metrics tracking & pure HTML/CSS/JS live status dashboard.
