@@ -16,12 +16,12 @@ function renderStats(data) {
       const isUp = u.status === "UP" && !isKilled;
       const label = isKilled ? `Restore :${u.port}` : `Kill :${u.port}`;
       return `
-        <div class="upstream-card">
+        <div class="card">
           <div class="upstream-top">
             <span class="upstream-port">:${u.port}</span>
-            <span class="upstream-status ${isUp ? "status-up" : "status-down"}">${isUp ? "UP" : "DOWN"}</span>
+            <span class="status-txt ${isUp ? "text-ok" : "text-err"}">${isUp ? "UP" : "DOWN"}</span>
           </div>
-          <div class="upstream-hits">Hits: ${u.hits ?? 0}</div>
+          <div class="muted-sm">Hits: ${u.hits ?? 0}</div>
           <button class="btn-asym-mirror toggle-port-btn" type="button" data-port="${u.port}">${label}</button>
         </div>
       `;
