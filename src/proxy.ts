@@ -17,6 +17,7 @@ let errors502: number = 0;
 let errors503: number = 0;
 const hitsByPort: Record<number, number> = {};
 const statusByPort: Record<number, 'UP' | 'DOWN'> = {};
+const disabledPorts = new Set<number>();
 const recentRequests: Array<{
   time: string;
   method: string;
@@ -57,10 +58,11 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
       totalRequests,
       errors502,
       errors503,
+      disabledPorts: Array.from(disabledPorts),
       upstreams: ports.map((p) => ({
         port: p,
         hits: hitsByPort[p] || 0,
-        status: statusByPort[p] || 'UP',
+        status: disabledPorts.has(p) ? 'DOWN' : (statusByPort[p] || 'UP'),
       })),
       recent: recentRequests,
     };
@@ -69,8 +71,37 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
     return;
   }
 
+  const toggleMatch = urlPath.match(/^\/api\/upstreams\/(\d+)\/toggle$/);
+  if (req.method === 'POST' && toggleMatch) {
+    const targetPort = Number(toggleMatch[1]);
+    if (!ports.includes(targetPort)) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Unknown upstream port' }));
+      return;
+    }
+
+    if (disabledPorts.has(targetPort)) {
+      disabledPorts.delete(targetPort);
+      statusByPort[targetPort] = 'UP';
+    } else {
+      disabledPorts.add(targetPort);
+      statusByPort[targetPort] = 'DOWN';
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(
+      JSON.stringify({
+        port: targetPort,
+        disabled: disabledPorts.has(targetPort),
+        disabledPorts: Array.from(disabledPorts),
+      })
+    );
+    return;
+  }
+
   // Dashboard static files
   const staticRoutes: Record<string, { file: string; type: string }> = {
+    '/monitor.png': { file: 'monitor.png', type: 'image/png' },
     '/dashboard': { file: 'index.html', type: 'text/html; charset=utf-8' },
     '/styles.css': { file: 'styles.css', type: 'text/css; charset=utf-8' },
     '/app.js': { file: 'app.js', type: 'application/javascript; charset=utf-8' },
@@ -125,6 +156,20 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
         res.writeHead(503, { 'Content-Type': 'text/plain' });
       }
       res.end('Service Unavailable');
+      return;
+    }
+    if (disabledPorts.has(targetPort)) {
+      statusByPort[targetPort] = 'DOWN';
+      if (attempt < maxAttempts && !res.headersSent) {
+        forwardRequest(attempt + 1);
+        return;
+      }
+      errors502++;
+      recordRequest(method, urlPath, targetPort, 502, startTime);
+      if (!res.headersSent) {
+        res.writeHead(502, { 'Content-Type': 'text/plain' });
+      }
+      res.end('Bad Gateway');
       return;
     }
     //information needed for the proxy to connect to the target server
